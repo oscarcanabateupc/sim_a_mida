@@ -8,7 +8,8 @@ public class SimState {
     List<Actor> waiting;
     List<Station> stations;
 
-    public void addEvent(Event e){
+    public void addEvent(Event e)
+    {
 
     }
 
