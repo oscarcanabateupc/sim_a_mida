@@ -1,15 +1,10 @@
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
+import java.util.*;
 
 public class Orquestrator {
     float currtime;
     int maxtime;
     SimState simState;
-    List<Actor> actors;
+    List<Actor> actors = new ArrayList<>();
     private Random fRandom;
 
     public Orquestrator(float currtime, int maxtime, SimState simState,long seed) {
@@ -19,34 +14,32 @@ public class Orquestrator {
         fRandom = new Random(seed);
     }
 
-    public void setUp(){}
+    public void setUp(Integer numActors,Event[] events){
+        //aqui se rellenan tambien las estaciones
+        generateActors(numActors,events);
+    }
 
     public void generateActors(Integer numActors,Event[] events){
-        //llenamos la lista de actores mediante una distribucion o algo y luego se ordenan por spawntime
-        List<Actor> Actors = new ArrayList<>();
         for(int i = 0; i < numActors; ++i){
             Float rn = fRandom.nextFloat(0,maxtime);
             Actor a = new Actor("Actor" + rn.toString() ,events,simState,rn);
-            Actors.add(a);
+            actors.add(a);
         }
-        System.out.println(Actors);
-        for(Actor a: Actors){
+        Collections.sort(actors);
+        System.out.println("Generated actors:");
+        for(Actor a: actors){
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
         }
     };
 
     public void runSim(){
-        float firstEventTime = simState.eventPool.get(0).simTime;
-        float firstspawActor = actors.get(0).spawnTime;
-        float nextCurrtime;
-        if (firstEventTime < firstspawActor) nextCurrtime = firstEventTime;
-        else nextCurrtime = firstspawActor;
-
-        //logica de los eventos
-
+        spawnDueActors();
+        sendToProcess();
+        sendToSink();
+        //send due events?
     };
 
-    public void spawnActor(){
+    public void spawnDueActors(){
         for(Actor a : actors){
             if (a.spawnTime == currtime){
                 simState.waiting.add(a);
@@ -62,7 +55,7 @@ public class Orquestrator {
             }
         }
     }
-    public void SendToSink(){
+    public void sendToSink(){
         for (Actor a: simState.waiting) {
             if (a.remainingEvents.length == 0) {
                 if (simState.waiting.contains(a)) simState.waiting.remove(a);
@@ -71,10 +64,4 @@ public class Orquestrator {
             }
         }
     };
-
-
-    private Random generator = new Random();
-    double randomGenerator() {
-        return generator.nextDouble()*0.5;
-    }
 }
