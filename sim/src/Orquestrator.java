@@ -7,7 +7,7 @@ public class Orquestrator {
     List<Actor> actors = new ArrayList<>();
     private Random fRandom;
 
-    public Orquestrator(float int, int maxtime, SimState simState,long seed) {
+    public Orquestrator(int currtime, int maxtime, SimState simState,long seed) {
         this.currtime = currtime;
         this.maxtime = maxtime;
         this.simState = simState;
