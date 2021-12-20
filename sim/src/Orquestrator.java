@@ -13,18 +13,16 @@ public class Orquestrator {
         this.simState = simState;
     }
 
-    public void setUp(){}
+    public void setUp()
+    {
+    	
+    }
     public void generateActors(){
         //llenamos la lista de actores mediante una distribucion o algo y luego se ordenan por spawntime
     };
 
     public void runSim(){
-        float firstEventTime = simState.eventPool.get(0).simTime;
-        float firstspawActor = actors.get(0).spawnTime;
-        float nextCurrtime;
-        if (firstEventTime < firstspawActor) nextCurrtime = firstEventTime;
-        else nextCurrtime = firstspawActor;
-
+        
         //logica de los eventos
 
     };
