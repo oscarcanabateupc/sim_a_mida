@@ -6,14 +6,14 @@ public class StatisticsManager {
     float tempsTotal;
 
     public void getAverage(){
-        tempsTotal = getTime();
-        return float(clientsSatisfets/tempsTotal);
+//        tempsTotal = getTime();
+//        return float(clientsSatisfets/tempsTotal);
     }
     public void getMedian(){
-        if (clientsSatisfets>clientsNoSatisfets) return "Clients Satisfets";
-        else return; "Clients Insatisfets";
+//        if (clientsSatisfets>clientsNoSatisfets) return "Clients Satisfets";
+//        else return; "Clients Insatisfets";
     }
     public void getPercentage(){
-        return float (clientsSatisfets/clientsTotals);
+//        return float (clientsSatisfets/clientsTotals);
     }
 }

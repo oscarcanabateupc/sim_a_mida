@@ -1,13 +1,13 @@
 import java.util.*;
 
 public class Orquestrator {
-    float currtime;
+    int currtime;
     int maxtime;
     SimState simState;
     List<Actor> actors = new ArrayList<>();
     private Random fRandom;
 
-    public Orquestrator(float currtime, int maxtime, SimState simState,long seed) {
+    public Orquestrator(float int, int maxtime, SimState simState,long seed) {
         this.currtime = currtime;
         this.maxtime = maxtime;
         this.simState = simState;
@@ -19,9 +19,20 @@ public class Orquestrator {
         generateActors(numActors,events);
     }
 
+    public void generateActorsInterval(Event[] events) {
+        for(Integer i = 0; i <= maxtime; i += 20){
+            Float rn = Float.valueOf(i);
+            Actor a = new Actor("Actor" + rn.toString() ,events,simState,rn);
+            actors.add(a);
+        }
+        for(Actor a: actors){
+            System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
+        }
+    }
+
     public void generateActors(Integer numActors,Event[] events){
         for(int i = 0; i < numActors; ++i){
-            Float rn = fRandom.nextFloat(0,maxtime);
+            Integer rn = fRandom.nextInt(0,maxtime);
             Actor a = new Actor("Actor" + rn.toString() ,events,simState,rn);
             actors.add(a);
         }
