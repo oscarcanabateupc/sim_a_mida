@@ -11,7 +11,8 @@ public class Station {
         this.hasOperator = hasOperator;
     }
 
-    public void send_event(String name){
+    public void send_event(String name)
+    {
         Event e = new Event(name);
         simState.addEvent(e);
     }

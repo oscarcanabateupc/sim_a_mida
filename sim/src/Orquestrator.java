@@ -26,6 +26,16 @@ public class Orquestrator {
         //logica de los eventos
 
     };
+    
+    public void SimulationStart()
+    {
+    	
+    }
+    
+    public void SimulationEnd()
+    {
+    	
+    }
 
     public void spawnActor(){
         for(Actor a : actors){
