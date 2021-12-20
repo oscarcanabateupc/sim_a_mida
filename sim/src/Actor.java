@@ -1,18 +1,15 @@
-public class Actor implements Comparable<Actor>{
+public class Actor{
     String name;
     Event[] remainingEvents;
     SimState simState;
-    Float spawnTime;
+    int spawnTime;
 
-    public Actor(String name, Event[] remainingEvents, SimState simState, float spawnTime) {
+    public Actor(String name, Event[] remainingEvents, SimState simState, int spawnTime) {
         this.name = name;
         this.remainingEvents = remainingEvents;
         this.simState = simState;
         this.spawnTime = spawnTime;
     }
 
-    @Override
-    public int compareTo(Actor a) {
-        return this.spawnTime.compareTo(a.spawnTime);
-    }
+   
 }
