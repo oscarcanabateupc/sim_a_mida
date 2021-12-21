@@ -12,8 +12,8 @@ public class Event{
         this.currentStation = station;
     }
     
-    public void printTimestamp(String status){
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+    public void printTimestamp(){
+        String timeStamp = Integer.toString(simTime);
         System.out.println("event: " + name + " on " + timeStamp);
     }
     
