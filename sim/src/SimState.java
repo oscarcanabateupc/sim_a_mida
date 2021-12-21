@@ -7,9 +7,8 @@ public class SimState {
     List<Actor> sink;
     List<Actor> processing;
     List<Actor> washing;
-    List<Process> OngoingCutProcess;
-    List<Process> OngoingWashProcess;
     List<Actor> waiting;
+    List<Actor> waitingOperators;
     List<Station> waitingStations;
     List<Station> processingWashStations;
     List<Station> processingCutStations;

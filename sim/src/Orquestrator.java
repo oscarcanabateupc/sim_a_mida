@@ -5,6 +5,7 @@ public class Orquestrator {
     int maxtime;
     SimState simState;
     Queue<Actor> actors;
+    Queue<Actor> operators;
     List<Actor> processingActors = new ArrayList<>();
     private Random fRandom;
 
@@ -20,6 +21,7 @@ public class Orquestrator {
     	generateStations();
         //aqui se rellenan tambien las estaciones
         generateActorsInterval(startingEvents);
+        generateOperatorsInterval(startingEvents);
         runSim();
     }
 
@@ -60,20 +62,19 @@ public class Orquestrator {
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
         }
     }
-    /*
-    public void generateActors(Integer numActors,Event[] events){
-        for(int i = 0; i < numActors; ++i){
-            Integer rn = fRandom.nextInt(0,maxtime);
-            Actor a = new Actor("Actor" + rn.toString() ,events,simState,rn);
-            actors.add(a);
+
+
+    public void generateOperatorsInterval(List<Event> events) {
+        for(Integer i = 0; i <= maxtime; i += 240){
+
+            Actor a = new Actor("Operator" + i.toString() ,events,simState,i);
+            operators.add(a);
         }
-        Collections.sort(actors);
-        System.out.println("Generated actors:");
-        for(Actor a: actors){
+        for(Actor a: simState.waiting){
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
         }
-    };
-	*/
+    }
+
     public void runSim(){
     	while (simState.simTime != 720)
     	{
@@ -94,6 +95,11 @@ public class Orquestrator {
                 simState.waiting.add(a);
             }
         }
+        for(Actor a : operators){
+            if (a.spawnTime == currtime){
+                simState.waitingOperators.add(a);
+            }
+        }
     }
 
     public void sendToProcess(){
@@ -105,14 +111,17 @@ public class Orquestrator {
                 {
                 	for (Station s: simState.waitingStations)
                 	{
-                		if (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3"))
+                		if (!simState.waitingOperators.isEmpty() && (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3")))
                 		{
                 			Event e = new Event("CUT",s);
                 			simState.addEvent(e);
                 			
                 			simState.processingCutStations.add(s);
-                			simState.OngoingCutProcess.add(new Process(a,s,s.process_time));
                 			simState.waitingStations.remove(s);
+                            s.client = a;
+                            s.operator = simState.waitingOperators.get(0);
+                            simState.waitingOperators.remove(0);
+
                 			break;
                 		}                		
                 	}
