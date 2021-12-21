@@ -9,11 +9,11 @@ public class Station {
         this.name = name;
         this.process_time = process_time;
         this.simState = simState;
-        send_event("EMPTY");
+        send_event("WAIT");
     }
 
     public void send_event(String name)
     {
-        Event e = new Event(name, this);
+        Event e = new Event(name, this,simState.simTime);
     }
 }

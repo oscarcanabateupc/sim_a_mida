@@ -1,18 +1,23 @@
 import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimState {
 	int simTime;
-    List<Event> eventPool;
-    List<Actor> sink;
-    List<Actor> processing;
-    List<Actor> washing;
-    List<Actor> waiting;
-    List<Actor> waitingOperators;
-    List<Station> waitingStations;
-    List<Station> processingWashStations;
-    List<Station> processingCutStations;
-
+    List<Event> eventPool = new ArrayList<>();
+    List<Actor> sink = new ArrayList<>();
+    List<Actor> processing = new ArrayList<>();
+    List<Actor> washing = new ArrayList<>();
+    List<Actor> waiting = new ArrayList<>();
+    List<Actor> waitingOperators = new ArrayList<>();
+    List<Station> waitingStations = new ArrayList<>();
+    List<Station> processingWashStations = new ArrayList<>();
+    List<Station> processingCutStations = new ArrayList<>();
+    
+    public SimState()
+    {
+    	simTime = 0;
+    }
     public void addEvent(Event e)
     {
     	eventPool.add(e);

@@ -9,10 +9,12 @@ public class Orquestrator {
     List<Actor> processingActors = new ArrayList<>();
     private Random fRandom;
 
-    public Orquestrator(int currtime, int maxtime, SimState simState,long seed) {
+    public Orquestrator(int currtime, int maxtime,long seed) {
         this.currtime = currtime;
         this.maxtime = maxtime;
-        this.simState = simState;
+        actors = new LinkedList<Actor>();
+        operators = new LinkedList<Actor>();
+        this.simState = new SimState();
         fRandom = new Random(seed);
     }
 
@@ -26,17 +28,17 @@ public class Orquestrator {
     }
 
     private void generateStations() {
-    	Station cut1 = new Station("cut chair 1", 30, simState);
-    	Station cut2 = new Station("cut chair 2", 30, simState);  
-    	Station cut3 = new Station("cut chair 3", 30, simState);  
+    	Station cut1 = new Station("cut1", 30, simState);
+    	Station cut2 = new Station("cut2", 30, simState);  
+    	Station cut3 = new Station("cut3", 30, simState);  
     	
-    	Station wash1 = new Station("wash chair 1", 10, simState);  
-    	Station wash2 = new Station("wash chair 2", 10, simState);
+    	Station wash1 = new Station("wash1", 10, simState);  
+    	Station wash2 = new Station("wash2", 10, simState);
     	
-    	Station wait1 = new Station("wash chair 1", 50, simState);  
-    	Station wait2 = new Station("wash chair 2", 50, simState);
-    	Station wait3 = new Station("wash chair 1", 50, simState);  
-    	Station wait4 = new Station("wash chair 2", 50, simState);
+    	Station wait1 = new Station("wait1", 50, simState);  
+    	Station wait2 = new Station("wait2", 50, simState);
+    	Station wait3 = new Station("wait3", 50, simState);  
+    	Station wait4 = new Station("wait4", 50, simState);
     	
     	simState.waitingStations.add(cut1);
     	simState.waitingStations.add(cut2);
@@ -83,29 +85,41 @@ public class Orquestrator {
             sendToProcess();
             sendToWash();
             sendToSink();
-            currtime = Math.max(simState.eventPool.get(0).simTime, actors.peek().spawnTime);
+            currtime = Math.min(simState.eventPool.get(0).simTime, actors.peek().spawnTime);
     	}
     	
         //send due events?
     };
 
     public void spawnDueActors(){
+    	Queue<Actor> actor = new LinkedList<Actor>();
+    	actor.addAll(actors);
         for(Actor a : actors){
             if (a.spawnTime == currtime){
                 simState.waiting.add(a);
+                actor.remove(a);
             }
         }
+        actors.clear();
+        actors.addAll(actor);
+        Queue<Actor> operator = new LinkedList<Actor>();
+    	operator.addAll(operators);
         for(Actor a : operators){
             if (a.spawnTime == currtime){
                 simState.waitingOperators.add(a);
+                operator.remove(a);
             }
         }
+        operators.clear();
+        operators.addAll(operator);
     }
 
     public void sendToProcess(){
+    	List<Actor> waitingAux = new ArrayList<>();
+    	waitingAux.addAll(simState.waiting);
         for (Actor a: simState.waiting) {
             if (a.remainingEvents.size() == 0) {
-                if (simState.waiting.contains(a)) simState.waiting.remove(a);
+                if (waitingAux.contains(a)) waitingAux.remove(a);
                 simState.processing.add(a); 
                 if (!simState.waitingStations.isEmpty())
                 {
@@ -113,7 +127,8 @@ public class Orquestrator {
                 	{
                 		if (!simState.waitingOperators.isEmpty() && (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3")))
                 		{
-                			Event e = new Event("CUT",s);
+                			
+                			Event e = new Event("CUT",s,currtime);
                 			simState.addEvent(e);
                 			
                 			simState.processingCutStations.add(s);
@@ -128,6 +143,8 @@ public class Orquestrator {
                 }
             }
         }
+        simState.waiting.clear();
+        simState.waiting.addAll(waitingAux);
     }
     
     public void sendToWash()
