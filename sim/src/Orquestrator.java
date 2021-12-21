@@ -97,13 +97,32 @@ public class Orquestrator {
         for (Actor a: simState.waiting) {
             if (a.remainingEvents.length == 0) {
                 if (simState.waiting.contains(a)) simState.waiting.remove(a);
-                simState.processing.add(a);
+                simState.processing.add(a); 
+                if (!simState.waitingStations.isEmpty())
+                {
+                	for (Station s: simState.waitingStations)
+                	{
+                		if (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3"))
+                		{
+                			simState.addEvent(new Event("CUT",s));
+                			simState.processingCutStations.add(s);
+                			simState.waitingStations.remove(s);
+                			break;
+                		}                		
+                	}
+                }
             }
         }
     }
+    
+    public void sendToWash()
+    {
+    	
+    }
     public void sendToSink(){
         for (Actor a: simState.waiting) {
-            if (a.remainingEvents.length == 0) {
+            if (a.remainingEvents.length == 0 && currtime - a.spawnTime >= 50) 
+            {
                 if (simState.waiting.contains(a)) simState.waiting.remove(a);
                 if (simState.processing.contains(a))  simState.processing.remove(a);
                 simState.sink.add(a);

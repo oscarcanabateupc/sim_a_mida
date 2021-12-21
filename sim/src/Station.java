@@ -1,11 +1,11 @@
 public class Station {
     String name;
-    float process_time;
+    int process_time;
     Actor client = null;
     Actor operator = null;
     SimState simState;
     
-    public Station(String name, float process_time, SimState simState) {
+    public Station(String name, int process_time, SimState simState) {
         this.name = name;
         this.process_time = process_time;
         this.simState = simState;
