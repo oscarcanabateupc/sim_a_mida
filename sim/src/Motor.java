@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Orquestrator {
+public class Motor {
     int currtime;
     int maxtime;
     SimState simState;
@@ -9,7 +9,7 @@ public class Orquestrator {
     List<Actor> processingActors = new ArrayList<>();
     private Random fRandom;
 
-    public Orquestrator(int currtime, int maxtime,long seed) {
+    public Motor(int currtime, int maxtime, long seed) {
         this.currtime = currtime;
         this.maxtime = maxtime;
         actors = new LinkedList<Actor>();

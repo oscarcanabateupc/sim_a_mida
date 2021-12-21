@@ -14,6 +14,6 @@ public class Station {
 
     public void send_event(String name)
     {
-        Event e = new Event(name, this,simState.simTime);
+        Event e = new Event(name, this,simState.simTime + process_time);
     }
 }
