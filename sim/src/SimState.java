@@ -6,7 +6,9 @@ public class SimState {
     List<Event> eventPool;
     List<Actor> sink;
     List<Actor> processing;
-    List<Process> OngoingProcess;
+    List<Actor> washing;
+    List<Process> OngoingCutProcess;
+    List<Process> OngoingWashProcess;
     List<Actor> waiting;
     List<Station> waitingStations;
     List<Station> processingWashStations;

@@ -15,10 +15,12 @@ public class Orquestrator {
         fRandom = new Random(seed);
     }
 
-    public void setUp(Integer numActors,Event[] events){
+    public void setUp(){
+    	List<Event> startingEvents = new ArrayList<>();
+    	generateStations();
         //aqui se rellenan tambien las estaciones
-        generateActorsInterval(events);
-        generateStations();
+        generateActorsInterval(startingEvents);
+        runSim();
     }
 
     private void generateStations() {
@@ -48,7 +50,7 @@ public class Orquestrator {
 
 	}
 
-	public void generateActorsInterval(Event[] events) {
+	public void generateActorsInterval(List<Event> events) {
         for(Integer i = 0; i <= maxtime; i += 20){
            
             Actor a = new Actor("Actor" + i.toString() ,events,simState,i);
@@ -78,6 +80,7 @@ public class Orquestrator {
     		simState.simTime = currtime;
             spawnDueActors();
             sendToProcess();
+            sendToWash();
             sendToSink();
             currtime = Math.max(simState.eventPool.get(0).simTime, actors.peek().spawnTime);
     	}
@@ -95,7 +98,7 @@ public class Orquestrator {
 
     public void sendToProcess(){
         for (Actor a: simState.waiting) {
-            if (a.remainingEvents.length == 0) {
+            if (a.remainingEvents.size() == 0) {
                 if (simState.waiting.contains(a)) simState.waiting.remove(a);
                 simState.processing.add(a); 
                 if (!simState.waitingStations.isEmpty())
@@ -104,8 +107,11 @@ public class Orquestrator {
                 	{
                 		if (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3"))
                 		{
-                			simState.addEvent(new Event("CUT",s));
+                			Event e = new Event("CUT",s);
+                			simState.addEvent(e);
+                			
                 			simState.processingCutStations.add(s);
+                			simState.OngoingCutProcess.add(new Process(a,s,s.process_time));
                 			simState.waitingStations.remove(s);
                 			break;
                 		}                		
@@ -117,11 +123,14 @@ public class Orquestrator {
     
     public void sendToWash()
     {
-    	
+    	for (Actor a: simState.processing)
+    	{
+    		
+    	}
     }
     public void sendToSink(){
         for (Actor a: simState.waiting) {
-            if (a.remainingEvents.length == 0 && currtime - a.spawnTime >= 50) 
+            if (a.remainingEvents.size() == 0 && currtime - a.spawnTime >= 50) 
             {
                 if (simState.waiting.contains(a)) simState.waiting.remove(a);
                 if (simState.processing.contains(a))  simState.processing.remove(a);
