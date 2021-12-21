@@ -82,8 +82,9 @@ public class Motor {
     	{
     		simState.simTime = currtime;
             spawnDueActors();
-            sendToProcess();
+            sendToWait();
             sendToWash();
+            sendToProcess();
             sendToSink();
             if(simState.eventPool.size() > 0)
             {
@@ -120,10 +121,38 @@ public class Motor {
         operators.addAll(operator);
     }
 
+    public void sendToWait(){
+        List<Actor> waitingAux = new ArrayList<>();
+        waitingAux.addAll(simState.waiting);
+        for (Actor a: simState.waiting) {
+            if (a.remainingEvents.size() == 0) {
+                if (waitingAux.contains(a)) waitingAux.remove(a);
+                simState.waitingForACut.add(a);
+                if (!simState.waitingStations.isEmpty())
+                {
+                    for (Station s: simState.waitingStations)
+                    {
+                        if ((s.name.equals("wait1") || s.name.equals("wait2") || s.name.equals("wait3") || s.name.equals("wait4")))
+                        {
+                            Event e = s.send_event("WAIT");
+                            e.printTimestamp();
+                            simState.addEvent(e);
+                            simState.waitingStations.remove(s);
+                            s.client = a;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        simState.waiting.clear();
+        simState.waiting.addAll(waitingAux);
+    }
+
     public void sendToProcess(){
     	List<Actor> waitingAux = new ArrayList<>();
-    	waitingAux.addAll(simState.waiting);
-        for (Actor a: simState.waiting) {
+    	waitingAux.addAll(simState.waitingForACut);
+        for (Actor a: simState.waitingForACut) {
             if (a.remainingEvents.size() == 0) {
                 if (waitingAux.contains(a)) waitingAux.remove(a);
                 simState.processing.add(a); 
@@ -148,8 +177,8 @@ public class Motor {
                 }
             }
         }
-        simState.waiting.clear();
-        simState.waiting.addAll(waitingAux);
+        simState.waitingForACut.clear();
+        simState.waitingForACut.addAll(waitingAux);
     }
     
     public void sendToWash()
@@ -165,7 +194,7 @@ public class Motor {
                 	
                 	for (Station s: simState.waitingStations)
                 	{
-                		if ((s.name.equals("wash1") || s.name.equals("wash2") || s.name.equals("wash3") || s.name.equals("wash4")))
+                		if (!simState.waitingOperators.isEmpty() && (s.name.equals("wash1") || s.name.equals("wash2") || s.name.equals("wash3") || s.name.equals("wash4")))
                 		{
                 			Event e = s.send_event("WASH");
                 			e.printTimestamp();
@@ -182,8 +211,8 @@ public class Motor {
                 }
             }
         }
-        simState.waiting.clear();
-        simState.waiting.addAll(processingAux);
+        simState.processing.clear();
+        simState.processing.addAll(processingAux);
     }
     public void sendToSink(){
         for (Actor a: simState.waiting) {

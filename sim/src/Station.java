@@ -15,6 +15,8 @@ public class Station {
     {
     	Event e = new Event(name, this,simState.simTime + process_time);
     	simState.addEvent(e);
+        simState.waitingOperators.add(operator);
+        operator = null;
         return e;
     }
 }

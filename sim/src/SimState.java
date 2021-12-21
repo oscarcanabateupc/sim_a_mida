@@ -9,6 +9,7 @@ public class SimState {
     List<Actor> processing = new ArrayList<>();
     List<Actor> washing = new ArrayList<>();
     List<Actor> waiting = new ArrayList<>();
+    List<Actor> waitingForACut = new ArrayList<>();
     List<Actor> waitingOperators = new ArrayList<>();
     List<Station> waitingStations = new ArrayList<>();
     List<Station> processingWashStations = new ArrayList<>();
