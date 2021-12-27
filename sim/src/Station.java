@@ -19,4 +19,13 @@ public class Station {
         operator = null;
         return e;
     }
+    public void clear()
+    {
+        simState.waitingOperators.add(operator);
+    	operator = null;
+    	client = null;    	
+    }
+    public void printTimestamp(){
+        System.out.println("on station: " + name + " with client: " + client.name);
+    }
 }

@@ -135,14 +135,16 @@ public class Motor {
                     {
                         if ((s.name.equals("wait1") || s.name.equals("wait2") || s.name.equals("wait3") || s.name.equals("wait4")))
                         {
+                        	a.enterSimTime = currtime;
                             Event e = s.send_event("WAIT");
                             e.printTimestamp();
                             simState.addEvent(e);
                             simState.waitingStations.remove(s);
                             s.client = a;
+                            s.printTimestamp();
                             break;
                         }
-                    }
+                    }                    
                 }
             }
         }
@@ -166,18 +168,19 @@ public class Motor {
                 			Event e = s.send_event("CUT");
                 			a.remainingEvents.clear();
                 			a.remainingEvents.add(e);
-                			e.printTimestamp();
+                			e.printTimestamp();                			
                 			simState.addEvent(e);               			
                 			simState.processingCutStations.add(s);
                 			simState.waitingStations.remove(s);
                             s.client = a;
                             s.operator = simState.waitingOperators.get(0);
+                            s.printTimestamp();
                             simState.waitingOperators.remove(0);
 
                 			break;
                 		}                		
                 	}
-                }
+                }                
             }
         }
         simState.waitingForACut.clear();
@@ -200,12 +203,15 @@ public class Motor {
                 		if (!simState.waitingOperators.isEmpty() && (s.name.equals("wash1") || s.name.equals("wash2") || s.name.equals("wash3") || s.name.equals("wash4")))
                 		{
                 			Event e = s.send_event("WASH");
+                			a.remainingEvents.clear();
+                			a.remainingEvents.add(e);
                 			e.printTimestamp();
                 			simState.addEvent(e);               			
                 			simState.processingWashStations.add(s);
                 			simState.processingCutStations.remove(s);
                             s.client = a;
                             s.operator = simState.waitingOperators.get(0);
+                            s.printTimestamp();
                             simState.waitingOperators.remove(0);
 
                 			break;
@@ -225,6 +231,18 @@ public class Motor {
                 if (simState.processing.contains(a))  simState.processing.remove(a);
                 simState.sink.add(a);
             }
+            
+        }
+        for (Actor a: simState.waitingForACut) {
+            if (currtime - a.enterSimTime >= 50) 
+            {
+            	Event e = a.remainingEvents.get(0);
+                if (simState.waitingForACut.contains(a)) simState.waitingForACut.remove(a);
+                e.currentStation.clear();
+                a.remainingEvents.clear();
+                simState.sink.add(a);
+            }
+            
         }
     };
 }
