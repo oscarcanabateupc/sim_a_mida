@@ -82,11 +82,12 @@ public class Motor {
     	{
     		simState.simTime = currtime;
             spawnDueActors();
-            sendToWait();
-            sendToWash();
-            sendToProcess();
             sendToSink();
-            if(simState.eventPool.size() > 0)
+            //sendToWash();
+            //sendToProcess();
+            sendToWait();
+            
+            if(simState.eventPool.size() > 0 && !actors.isEmpty())
             {
             currtime = Math.min(simState.eventPool.get(0).simTime, actors.peek().spawnTime);
             if (Math.min(simState.eventPool.get(0).simTime, actors.peek().spawnTime) == simState.eventPool.get(0).simTime)simState.eventPool.remove(0);
@@ -163,6 +164,8 @@ public class Motor {
                 		if (!simState.waitingOperators.isEmpty() && (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3")))
                 		{
                 			Event e = s.send_event("CUT");
+                			a.remainingEvents.clear();
+                			a.remainingEvents.add(e);
                 			e.printTimestamp();
                 			simState.addEvent(e);               			
                 			simState.processingCutStations.add(s);
