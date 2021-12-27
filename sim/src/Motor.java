@@ -1,5 +1,7 @@
 import java.util.*;
 
+import javax.sound.sampled.SourceDataLine;
+
 public class Motor {
     int currtime;
     int maxtime;
@@ -19,11 +21,10 @@ public class Motor {
     }
 
     public void setUp(){
-    	List<Event> startingEvents = new ArrayList<>();
     	generateStations();
         //aqui se rellenan tambien las estaciones
-        generateActorsInterval(startingEvents);
-        generateOperatorsInterval(startingEvents);
+        generateActorsInterval();
+        generateOperatorsInterval();
         runSim();
     }
 
@@ -54,9 +55,9 @@ public class Motor {
 
 	}
 
-	public void generateActorsInterval(List<Event> events) {
+	public void generateActorsInterval() {
         for(Integer i = 0; i <= maxtime; i += 20){
-           
+            List<Event> events = new ArrayList<>();
             Actor a = new Actor("Actor" + i.toString() ,events,simState,i);
             actors.add(a);
         }
@@ -66,9 +67,9 @@ public class Motor {
     }
 
 
-    public void generateOperatorsInterval(List<Event> events) {
+    public void generateOperatorsInterval() {
         for(Integer i = 0; i <= maxtime; i += 240){
-
+            List<Event> events = new ArrayList<>();
             Actor a = new Actor("Operator" + i.toString() ,events,simState,i);
             operators.add(a);
         }
@@ -84,8 +85,8 @@ public class Motor {
             spawnDueActors();
             sendToSink();
             //sendToWash();
-            //sendToProcess();
             sendToWait();
+            sendToProcess();
             
             if(simState.eventPool.size() > 0 && !actors.isEmpty())
             {
@@ -127,21 +128,23 @@ public class Motor {
         waitingAux.addAll(simState.waiting);
         for (Actor a: simState.waiting) {
             if (a.remainingEvents.size() == 0) {
-                if (waitingAux.contains(a)) waitingAux.remove(a);
-                simState.waitingForACut.add(a);
                 if (!simState.waitingStations.isEmpty())
                 {
                     for (Station s: simState.waitingStations)
                     {
                         if ((s.name.equals("wait1") || s.name.equals("wait2") || s.name.equals("wait3") || s.name.equals("wait4")))
                         {
+                            if (waitingAux.contains(a)) waitingAux.remove(a);
+                            simState.waitingForACut.add(a);
                         	a.enterSimTime = currtime;
                             Event e = s.send_event("WAIT");
+                            a.remainingEvents.add(e);
                             e.printTimestamp();
                             simState.addEvent(e);
                             simState.waitingStations.remove(s);
                             s.client = a;
                             s.printTimestamp();
+                            simState.waitingOperators.remove(0);
                             break;
                         }
                     }                    
@@ -156,24 +159,25 @@ public class Motor {
     	List<Actor> waitingAux = new ArrayList<>();
     	waitingAux.addAll(simState.waitingForACut);
         for (Actor a: simState.waitingForACut) {
-            if (a.remainingEvents.size() == 0) {
-                if (waitingAux.contains(a)) waitingAux.remove(a);
-                simState.processing.add(a); 
+            if (a.remainingEvents.size() == 1) {
+
                 if (!simState.waitingStations.isEmpty())
                 {
                 	for (Station s: simState.waitingStations)
                 	{
                 		if (!simState.waitingOperators.isEmpty() && (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3")))
-                		{
+                		{   
+                            if (waitingAux.contains(a)) waitingAux.remove(a);
+                            simState.processing.add(a); 
+                            s.client = a;
+                            s.operator = simState.waitingOperators.get(0);
                 			Event e = s.send_event("CUT");
-                			a.remainingEvents.clear();
+                			//a.remainingEvents.clear();
                 			a.remainingEvents.add(e);
                 			e.printTimestamp();                			
                 			simState.addEvent(e);               			
                 			simState.processingCutStations.add(s);
                 			simState.waitingStations.remove(s);
-                            s.client = a;
-                            s.operator = simState.waitingOperators.get(0);
                             s.printTimestamp();
                             simState.waitingOperators.remove(0);
 
@@ -192,7 +196,7 @@ public class Motor {
     	List<Actor> processingAux = new ArrayList<>();
     	processingAux.addAll(simState.processing);
         for (Actor a: simState.processing) {
-            if (a.remainingEvents.size() == 0) {
+            if (a.remainingEvents.size() == 2) { //0
                 if (processingAux.contains(a)) processingAux.remove(a);
                 simState.washing.add(a); 
                 if (!simState.processingCutStations.isEmpty())
@@ -224,25 +228,35 @@ public class Motor {
         simState.processing.addAll(processingAux);
     }
     public void sendToSink(){
+        List<Actor> waitingAux = new ArrayList<>();
+        waitingAux.addAll(simState.waiting);
         for (Actor a: simState.waiting) {
             if (a.remainingEvents.size() == 0 && currtime - a.spawnTime >= 50) 
             {
-                if (simState.waiting.contains(a)) simState.waiting.remove(a);
+                if (waitingAux.contains(a)) waitingAux.remove(a);
                 if (simState.processing.contains(a))  simState.processing.remove(a);
                 simState.sink.add(a);
             }
             
         }
+        simState.waiting.clear();
+        simState.waiting.addAll(waitingAux);
+
+        waitingAux = new ArrayList<>();
+        waitingAux.addAll(simState.waitingForACut);
+
         for (Actor a: simState.waitingForACut) {
             if (currtime - a.enterSimTime >= 50) 
             {
             	Event e = a.remainingEvents.get(0);
-                if (simState.waitingForACut.contains(a)) simState.waitingForACut.remove(a);
+                if (waitingAux.contains(a)) waitingAux.remove(a);
                 e.currentStation.clear();
                 a.remainingEvents.clear();
                 simState.sink.add(a);
             }
             
         }
+        simState.waitingForACut.clear();
+        simState.waitingForACut.addAll(waitingAux);
     };
 }
