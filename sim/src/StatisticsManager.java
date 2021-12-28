@@ -65,20 +65,47 @@ public class StatisticsManager {
     }
     public void printTempsEsperaFase()
     {
-    	System.out.println("Temps d'espera mitjà Fase 1: " + (sumaTempsEsperaF1 / (clientsTotalsF1 - clientsPerdutsF1)));
-    	System.out.println("Temps d'espera mitjà Fase 2: " + (sumaTempsEsperaF2 / (clientsTotalsF2 - clientsPerdutsF2)));
-    	System.out.println("Temps d'espera mitjà Fase 3: " + (sumaTempsEsperaF3 / (clientsTotalsF3 - clientsPerdutsF3)));
+    	System.out.println("Temps d'espera mitja Fase 1: " + (sumaTempsEsperaF1 / (clientsTotalsF1 - clientsPerdutsF1)));
+    	System.out.println("Temps d'espera mitja Fase 2: " + (sumaTempsEsperaF2 / (clientsTotalsF2 - clientsPerdutsF2)));
+    	System.out.println("Temps d'espera mitja Fase 3: " + (sumaTempsEsperaF3 / (clientsTotalsF3 - clientsPerdutsF3)));
 
     }
-    public void getAverage(){
-//        tempsTotal = getTime();
-//        return float(clientsSatisfets/tempsTotal);
+    public void getAverage(int simTime){
+		System.out.println("Average clients tractats Fase 1: " + ((clientsTotalsF1 - clientsPerdutsF1) / simTime));
+    	System.out.println("Average clients tractats Fase 2: " + ((clientsTotalsF2 - clientsPerdutsF2) / simTime));
+    	System.out.println("Average clients tractats Fase 3: " + ((clientsTotalsF3 - clientsPerdutsF3) / simTime));
+		System.out.println("Average clients tractats TOTALS: " + (((clientsTotalsF1 - clientsPerdutsF1) + (clientsTotalsF2 - clientsPerdutsF2) +(clientsTotalsF3 - clientsPerdutsF3)) / simTime));
     }
     public void getMedian(){
-//        if (clientsSatisfets>clientsNoSatisfets) return "Clients Satisfets";
-//        else return; "Clients Insatisfets";
+		String frase;
+		if (clientsPerdutsF1 > clientsTotalsF1 - clientsPerdutsF1) {
+			frase = "Clients insatisfets";
+		}
+		else {
+			frase = "Clients satisfets";
+		}
+		System.out.println("Majoria de clients Fase 1: " + frase);
+
+		if (clientsPerdutsF2 > clientsTotalsF2 - clientsPerdutsF2) {
+			frase = "Clients insatisfets";
+		}
+		else {
+			frase = "Clients satisfets";
+		}
+		System.out.println("Majoria de clients Fase 2: " + frase);
+
+		if (clientsPerdutsF3 > clientsTotalsF3 - clientsPerdutsF3) {
+			frase = "Clients insatisfets";
+		}
+		else {
+			frase = "Clients satisfets";
+		}
+		System.out.println("Majoria de clients Fase 3: " + frase);
     }
     public void getPercentage(){
-//        return float (clientsSatisfets/clientsTotals);
+		System.out.println("Average clients tractats Fase 1: " + (((clientsTotalsF1 - clientsPerdutsF1) / Math.max(1, clientsTotalsF1)) / 100.00));
+    	System.out.println("Average clients tractats Fase 2: " + (((clientsTotalsF2 - clientsPerdutsF2) / Math.max(1, clientsTotalsF2)) / 100.00));
+    	System.out.println("Average clients tractats Fase 3: " + (((clientsTotalsF3 - clientsPerdutsF3) / Math.max(1, clientsTotalsF3)) / 100.00));
+		System.out.println("Average clients tractats TOTALS: " + ((((clientsTotalsF1 - clientsPerdutsF1) + (clientsTotalsF2 - clientsPerdutsF2) +(clientsTotalsF3 - clientsPerdutsF3)) / (clientsTotalsF1 + clientsTotalsF2 + clientsTotalsF3))  / 100.00));
     }
 }

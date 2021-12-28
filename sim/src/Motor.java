@@ -42,12 +42,12 @@ public class Motor {
     	Station wait3 = new Station("wait3", 50, simState);  
     	Station wait4 = new Station("wait4", 50, simState);
     	
-    	simState.waitingStations.add(cut1); //0 - 30 //30 - 60
-    	simState.waitingStations.add(cut2); //20 - 50 //50 - 80
-    	simState.waitingStations.add(cut3); //40 - 70 //70 - 100
+    	simState.waitingStations.add(cut1);
+    	simState.waitingStations.add(cut2);
+    	simState.waitingStations.add(cut3);
     	
-    	simState.waitingStations.add(wash1); //30 - 40 //70 - 80 //100 - 110
-    	simState.waitingStations.add(wash2); //50 - 60 //60 - 70 //80 - 90
+    	simState.waitingStations.add(wash1);
+    	simState.waitingStations.add(wash2);
     	
     	simState.waitingStations.add(wait1);
     	simState.waitingStations.add(wait2);
@@ -99,9 +99,13 @@ public class Motor {
             else if (!actors.isEmpty()) currtime = actors.peek().spawnTime;
             else break;
         }
+        
     	statManager.printPerdutsPerFase();
     	statManager.printTempsEsperaFase();
-        //send due events?
+        statManager.getAverage(currtime);
+        statManager.getMedian();
+        statManager.getPercentage();
+        
     };
 
     private void endEvents() {
