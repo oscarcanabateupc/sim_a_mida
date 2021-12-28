@@ -11,6 +11,7 @@ public class SimState {
     List<Actor> waiting = new ArrayList<>();
     List<Actor> waitingForACut = new ArrayList<>();
     List<Actor> waitingOperators = new ArrayList<>();
+    List<Actor> waitingForAWash = new ArrayList<>();
     List<Station> waitingStations = new ArrayList<>();
     List<Station> processingWashStations = new ArrayList<>();
     List<Station> processingCutStations = new ArrayList<>();
