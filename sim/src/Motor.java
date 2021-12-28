@@ -10,7 +10,8 @@ public class Motor {
     Queue<Actor> operators;
     List<Actor> processingActors = new ArrayList<>();
     private Random fRandom;
-
+    StatisticsManager statManager = new StatisticsManager();
+    
     public Motor(int currtime, int maxtime, long seed) {
         this.currtime = currtime;
         this.maxtime = maxtime;
@@ -72,6 +73,7 @@ public class Motor {
             List<Event> events = new ArrayList<>();
             Actor a = new Actor("Operator" + i.toString() ,events,simState,i);
             operators.add(a);
+            statManager.addClientTotal(currtime);
         }
         for(Actor a: operators){
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
@@ -97,7 +99,8 @@ public class Motor {
             else if (!actors.isEmpty()) currtime = actors.peek().spawnTime;
             else break;
         }
-    	
+    	statManager.printPerdutsPerFase();
+    	statManager.printTempsEsperaFase();
         //send due events?
     };
 
@@ -190,7 +193,8 @@ public class Motor {
                 	for (Station s: simState.waitingStations)
                 	{
                 		if (!s.hasOperator && !s.hasClient && !simState.waitingOperators.isEmpty() && (s.name.equals("cut1") || s.name.equals("cut2") || s.name.equals("cut3")))
-                		{   
+                		{
+                			statManager.addSumaTempsEspera(currtime, a.enterSimTime);
                             simState.processing.add(a); 
                             waitingAux.remove(a);
                 			simState.processingCutStations.add(s);
@@ -258,6 +262,7 @@ public class Motor {
             {
                 if (waitingAux.contains(a)) waitingAux.remove(a);
                 simState.sink.add(a);
+                statManager.addClientPerdut(currtime);
             }            
         }        
         simState.waiting.clear();
