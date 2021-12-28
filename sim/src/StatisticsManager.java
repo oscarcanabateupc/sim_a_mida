@@ -14,11 +14,11 @@ public class StatisticsManager {
     
     public void addClientPerdut(int simTime)
     {
-    	if (simTime >= 0 && simTime <= 180)
+    	if (simTime >= 0 && simTime < 180)
     	{
     		clientsPerdutsF1 += 1;
     	}
-    	else if (simTime >= 180 && simTime <= 420)
+    	else if (simTime >= 180 && simTime < 420)
     	{
     		clientsPerdutsF2 += 1;
     	}
@@ -29,11 +29,11 @@ public class StatisticsManager {
     }
     public void addClientTotal(int simTime)
     {
-    	if (simTime >= 0 && simTime <= 180)
+    	if (simTime >= 0 && simTime < 180)
     	{
     		clientsTotalsF1 += 1;
     	}
-    	else if (simTime >= 180 && simTime <= 420)
+    	else if (simTime >= 180 && simTime < 420)
     	{
     		clientsTotalsF2 += 1;
     	}
@@ -44,11 +44,11 @@ public class StatisticsManager {
     }
     public void addSumaTempsEspera(int simTime, int enterSimTime)
     {
-    	if (simTime >= 0 && simTime <= 180)
+    	if (simTime >= 0 && simTime < 180)
     	{
     		sumaTempsEsperaF1 += (simTime - enterSimTime);
     	}
-    	else if (simTime >= 180 && simTime <= 420)
+    	else if (simTime >= 180 && simTime < 420)
     	{
     		sumaTempsEsperaF2 += (simTime - enterSimTime);
     	}

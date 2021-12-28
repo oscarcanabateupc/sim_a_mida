@@ -61,6 +61,7 @@ public class Motor {
             List<Event> events = new ArrayList<>();
             Actor a = new Actor("Actor" + i.toString() ,events,simState,i);
             actors.add(a);
+            statManager.addClientTotal(i);
         }
         for(Actor a: actors){
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
@@ -73,7 +74,6 @@ public class Motor {
             List<Event> events = new ArrayList<>();
             Actor a = new Actor("Operator" + i.toString() ,events,simState,i);
             operators.add(a);
-            statManager.addClientTotal(currtime);
         }
         for(Actor a: operators){
             System.out.println(Float.toString(a.spawnTime) + " " + a.remainingEvents.toString() + " " + a.simState.toString() + " " + a.name);
